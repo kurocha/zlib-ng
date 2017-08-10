@@ -18,6 +18,8 @@ define_target "zlib-ng" do |target|
 		make prefix: cache_prefix, package_files: package_files
 	end
 	
+	target.priority = 80
+	
 	target.depends :platform
 	
 	target.depends "Build/Make"
