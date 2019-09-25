@@ -3,21 +3,9 @@
 #  This file is part of the "Teapot" project, and is released under the MIT license.
 #
 
-teapot_version "1.0.0"
+teapot_version "3.0"
 
 define_target "zlib-ng" do |target|
-	target.build do
-		source_files = Files::Directory.join(target.package.path, "zlib-ng")
-		cache_prefix = environment[:build_prefix] / environment.checksum + "zlib-ng"
-		package_files = environment[:install_prefix] / "lib/libz.a"
-		
-		cmake source: source_files, build_prefix: cache_prefix, arguments: [
-			"-DBUILD_SHARED_LIBS=OFF",
-		]
-		
-		make prefix: cache_prefix, package_files: package_files
-	end
-	
 	target.priority = 80
 	
 	target.depends :platform
@@ -26,7 +14,19 @@ define_target "zlib-ng" do |target|
 	target.depends "Build/CMake"
 	
 	target.provides "Library/z" do
-		append linkflags {install_prefix + "lib/libz.a"}
+		source_files = target.package.path + "zlib-ng"
+		cache_prefix = environment[:build_prefix] / environment.checksum + "zlib-ng"
+		package_files = cache_prefix / "lib/libzlib.a"
+		
+		cmake source: source_files, build_prefix: cache_prefix, arguments: [
+			"-DBUILD_SHARED_LIBS=OFF",
+			"-DZLIB_COMPAT=ON"
+		]
+		
+		make prefix: cache_prefix, package_files: package_files
+		
+		append linkflags package_files
+		append header_search_paths cache_prefix + "include"
 	end
 end
 
