@@ -16,7 +16,7 @@ define_target "zlib-ng" do |target|
 	target.provides "Library/z" do
 		source_files = target.package.path + "zlib-ng"
 		cache_prefix = environment[:build_prefix] / environment.checksum + "zlib-ng"
-		package_files = cache_prefix / "lib/libzlib.a"
+		package_files = cache_prefix / "lib/libz.a"
 		
 		cmake source: source_files, install_prefix: cache_prefix, arguments: [
 			"-DBUILD_SHARED_LIBS=OFF",
